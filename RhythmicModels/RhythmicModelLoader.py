@@ -4,8 +4,6 @@ import os
 from random import random
 from typing import Dict, List, Tuple
 
-### NEED TO IMPORT COMPONENTS
-
 
 class RhythmicModel(object):
     NotesDurations = []

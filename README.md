@@ -26,7 +26,7 @@ After that, the song is passed to the MidiStructurer converter and a midi file i
 The main challenge of generating music is the sheer amount of possibilities:
 you can play on the type of tracks used, their number, the instruments chosen, the scales, the rythmic preset etc...
 
-I want to make it easy to extend the number of possibilities at generation, but this is still in development, more details will be given later
+I want to make it easy to extend the number of possibilities at generation, but this is still in development, more details will be given later. See [GeneratorSpecs.md](GeneratorSpecs.md) for more details
 
  
 
