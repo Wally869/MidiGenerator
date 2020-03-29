@@ -9,11 +9,11 @@ Presets must be defined in a json file in the "RhythmicModels" folder contain th
 For tracking purposes
 - Tags: [str]  
 For tracking purposes, as well as for definition of global song presets 
-- SilenceChance: float
+- SilenceChance: float  
 Probability of drawing a Silence
-- Notes: Dict[str: float]  
+- Notes: Dict[str: float]   
 Keys are duration for notes, values are the probability associated with drawing the given duration
-- Silences: Dict[str: float]
+- Silences: Dict[str: float]  
 Same as Notes, but for silences
 
 

@@ -1,0 +1,46 @@
+{
+  "Name": "TestRhythmicPreset2",
+  "Tags": ["Test"],
+  "Beats": 4,
+  "MainPreset": [
+    {
+      "beat": 0.0,
+      "duration": 1.0
+    },
+    {
+      "beat": 2.0,
+      "duration": 1.0
+    }
+  ],
+  "HasVariants": true,
+  "Variants": [
+    [
+      {
+        "beat": 0.0,
+        "duration": 1.0
+      },
+      {
+        "beat": 2.0,
+        "duration": 1.0
+      },
+      {
+        "beat": 3.0,
+        "duration": 1.0
+      }
+    ],
+    [
+      {
+        "beat": 0.0,
+        "duration": 1.0
+      },
+      {
+        "beat": 1.5,
+        "duration": 0.5
+      },
+      {
+        "beat": 2,
+        "duration": 1.0
+      }
+    ]
+  ]
+}

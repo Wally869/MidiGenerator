@@ -4,6 +4,9 @@ import os
 from random import random
 from typing import Dict, List, Tuple
 
+from MidiStructurer.Components import *
+from utils import ReadMultipleJsons, ReadSingleJson
+
 
 class RhythmicModel(object):
     NotesDurations = []
@@ -20,7 +23,7 @@ class RhythmicModel(object):
         # Perform checks on probabilities
         self.CheckAndSetProbabilities(modelSpecs)
 
-    def CheckAndSetProbabilities(self, modelSpecs):
+    def CheckAndSetProbabilities(self, modelSpecs) -> None:
         vals = []
         for k in ["Notes", "Silences"]:
             vals += self.ComputeCumulativeProbasForKeyType(k, modelSpecs)
@@ -65,6 +68,7 @@ class RhythmicModel(object):
                 currDurations = self.NotesDurations
                 currProbabilities = self.NotesCumulativeProbabilities
 
+            nbTries = 0
             while True:
                 drawn = random()
                 for id_proba in range(len(currProbabilities)):
@@ -84,27 +88,63 @@ class RhythmicModel(object):
                     sumDurations += selectedDuration
                     break
 
+                # adding this to ensure existence of solution?
+                # need to perform check on presets, to see if possible to solve problem
+                nbTries += 1
+                if nbTries >= 100:
+                    nbTries = 0
+                    if drewSilence:
+                        currDurations = self.NotesDurations
+                        currProbabilities = self.NotesCumulativeProbabilities
+                    else:
+                        currDurations = self.SilencesDurations
+                        currProbabilities = self.SilencesCumulativeProbabilities
         return preset
+        #return BarFromPreset(preset)
 
-    def GenerateSingleSectionPreset(self, nbBarsPerSection: int, nbBeatsPerBar: int):
-        return [self.GenerateBarPreset(nbBeatsPerBar) for _ in range(nbBarsPerSection)]
+    def GenerateBar(self, nbBeats: int) -> Bar:
+        return BarFromPreset(self.GenerateBarPreset(nbBeats))
 
-    def GenerateSectionsPresets(self, nbSections: int, nbBarsPerSection: int, nbBeatsPerBar: int):
-        return [self.GenerateSingleSectionPreset(nbBarsPerSection, nbBeatsPerBar) for _ in range(nbSections)]
+    def GenerateMultipleBars(self, nbBarsToGenerate: int, nbBeatsPerBar: int):
+        return [self.GenerateBar(nbBeatsPerBar) for _ in range(nbBarsToGenerate)]
 
+    def GenerateSections(self, nbSections: int, nbBarsPerSection: int, nbBeatsPerBar: int):
+        return [self.GenerateMultipleBars(nbBarsPerSection, nbBeatsPerBar) for _ in range(nbSections)]
+
+
+def ReadAllModelsJsonFiles():
+    allModelsSpecsFilepaths = glob("RhythmicModelsSpecs/*.json")
+    return ReadMultipleJsons(allModelsSpecsFilepaths)
 
 
 def LoadAllRhythmicModels() -> List[RhythmicModel]:
-    allModelsSpecsFilepaths = glob("*.json")
-    rhythmicModels = [LoadSingleRhythmicModel(filepath) for filepath in allModelsSpecsFilepaths]
+    jsonData = [model for model in ReadAllModelsJsonFiles()]
+    rhythmicModels = [RhythmicModel(m) for m in jsonData]
 
     return rhythmicModels
 
-
 def LoadSingleRhythmicModel(filepath: str) -> RhythmicModel:
-    with open(filepath, "r") as f:
-        modelSpecs = json.load(f)
-
+    modelSpecs = ReadSingleJson(filepath)
     # map model specs to an object
     return RhythmicModel(modelSpecs)
 
+def LoadRhythmicModelsWithTags(tags: List[str]) -> List[RhythmicModel]:
+    models = ReadAllModelsJsonFiles()
+    chosenModelsJsons = []
+    for m in models:
+        for t in tags:
+            if t in m["Tags"]:
+                chosenModelsJsons.append(m)
+                break
+
+    return [RhythmicModel(m) for m in chosenModelsJsons]
+
+
+def LoadRhythmicModelsWithSingleTag(tag: str) -> List[RhythmicModel]:
+    models = ReadAllModelsJsonFiles()
+    chosenModelsJsons = []
+    for m in models:
+        if tag in m["Tags"]:
+            chosenModelsJsons.append(m)
+
+    return [RhythmicModel(m) for m in chosenModelsJsons]

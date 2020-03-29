@@ -1,0 +1,14 @@
+{
+  "Name": "TestBeats",
+  "Tags": ["Test"],
+  "NbBeats": 4,
+  "BeatsDecomposition": {
+    "Primary": [0.0],
+    "Secondary": [0.0, 2.0]
+  },
+  "Drums": {
+    "Primary": "Bass Drum 1",
+    "Secondary": "High Tom 1",
+    "Default": "Snare Drum 1"
+  }
+}

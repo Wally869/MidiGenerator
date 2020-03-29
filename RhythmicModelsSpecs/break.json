@@ -1,0 +1,11 @@
+{
+  "Name": "Break",
+  "Tags": ["Break"],
+  "SilenceChance": 1,
+  "Notes": {
+  },
+  "Silences": {
+    "0.5": 0.25,
+    "1":  0.75
+  }
+}

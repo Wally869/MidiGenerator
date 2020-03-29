@@ -1,0 +1,14 @@
+{
+  "Name": "TestRhythmicModel2",
+  "Tags": ["Test", "Fast"],
+  "SilenceChance": 0.3,
+  "Notes": {
+    "0.25": 0.25,
+    "0.5": 0.5,
+    "1": 0.25
+  },
+  "Silences": {
+    "0.25": 0.25,
+    "0.5":  0.75
+  }
+}
