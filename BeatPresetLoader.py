@@ -12,6 +12,7 @@ from utils import ReadMultipleJsons, ReadSingleJson
 
 from copy import deepcopy
 
+
 def ConvertDrumInstrumentToNoteObject(drumInstrument: str):
     height = GetHeightFromDrums(drumInstrument)
     outNote = GetNoteFromHeight(height)
@@ -74,7 +75,6 @@ class BeatPreset(object):
         track.Bars = newBars
 
 
-
 def ReadAllBeatPresetsJsonFiles():
     allModelsSpecsFilepaths = glob("BeatPresetsSpecs/*.json")
     return ReadMultipleJsons(allModelsSpecsFilepaths)
@@ -86,10 +86,12 @@ def LoadAllBeatPresets() -> List[BeatPreset]:
 
     return beatPresets
 
+
 def LoadSingleBeatPreset(filepath: str) -> BeatPreset:
     presetSpecs = ReadSingleJson(filepath)
     # map model specs to an object
     return BeatPreset(presetSpecs)
+
 
 def LoadRhythmicModelsWithTags(tags: List[str]) -> List[BeatPreset]:
     models = ReadAllBeatPresetsJsonFiles()
@@ -111,4 +113,3 @@ def LoadRhythmicModelsWithSingleTag(tag: str) -> List[BeatPreset]:
             chosenModelsJsons.append(m)
 
     return [BeatPreset(m) for m in chosenModelsJsons]
-
