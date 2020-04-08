@@ -341,7 +341,8 @@ def GenerateSingleChannelStrophicWithNoteInScaleRestriction():
 
     melodyPresets = [
         melodyPreset1,
-        melodyPreset2
+        melodyPreset2,
+        melodyPreset1
     ]
 
     melodyPresets += melodyPresets
@@ -353,16 +354,26 @@ def GenerateSingleChannelStrophicWithNoteInScaleRestriction():
 
     scaleType = choice(["Major", "Minor"])
     scale = ScaleSpecs(
-        RefNote="C",
+        RefNote=choice(ALL_NOTES),  # "C",
         ScaleType=scaleType
     )
 
     allowedIntervals = CHROMATIC_AND_DIATONIC_INTERVALS
+    """
     allowedIntervals = list(filter(
-        lambda elem: elem.Quality == scaleType, allowedIntervals
+        lambda elem: (elem.Quality == scaleType or elem.Quality == "Perfect") and elem.IntervalNumber != 1, allowedIntervals
     ))
+    """
 
-    allowedNotes = scale.GetScaleNotes()
+    allowedIntervals = list(filter(
+        lambda elem: (elem.Quality == scaleType or elem.Quality == "Perfect") and 1 < elem.IntervalNumber <= 5, allowedIntervals
+    ))
+    print("Allowed Intervals:")
+    [print(interval) for interval in allowedIntervals]
+    print()
+
+    #allowedNotes = scale.GetPentatonicScaleNotes()
+    allowedNotes = scale.GetScaleNotesFromMode(mode="Phrygian")
 
     targetLen = sum(
         [
@@ -373,34 +384,37 @@ def GenerateSingleChannelStrophicWithNoteInScaleRestriction():
     maxNote = allowedNotes[0] + 12
     minNote = allowedNotes[0]
 
-    chosenNotes = [allowedNotes[0]]
-    while len(chosenNotes) < targetLen:
-        potentialPositiveIntervals = chosenNotes[-1].GetValidIntervalsFromSelected(allowedIntervals, True)
-        potentialNegativeIntervals = chosenNotes[-1].GetValidIntervalsFromSelected(allowedIntervals, False)
+    while True:
+        chosenNotes = [allowedNotes[0]]
+        # chosenNotes = [choice(allowedNotes)]
+        while len(chosenNotes) < targetLen:
+            potentialPositiveIntervals = chosenNotes[-1].GetValidIntervalsFromSelected(allowedIntervals, True)
+            potentialNegativeIntervals = chosenNotes[-1].GetValidIntervalsFromSelected(allowedIntervals, False)
 
-        # get potential end notes on these intervals
-        potentialNextNotes = [
-            (chosenNotes[-1] + interval)[0] for interval in potentialPositiveIntervals
-        ]
-        potentialNextNotes += [
-            (chosenNotes[-1] - interval)[0] for interval in potentialNegativeIntervals
-        ]
+            # get potential end notes on these intervals
+            potentialNextNotes = [
+                (chosenNotes[-1] + interval)[0] for interval in potentialPositiveIntervals
+            ]
+            potentialNextNotes += [
+                (chosenNotes[-1] - interval)[0] for interval in potentialNegativeIntervals
+            ]
 
-        # Filter potentialNextNotes to only keep those in allowed Notes
-        reducedNextNotes = list(filter(
-            lambda x: x in allowedNotes, potentialNextNotes
-        ))
+            # Filter potentialNextNotes to only keep those in allowed Notes
+            reducedNextNotes = list(filter(
+                lambda x: x in allowedNotes, potentialNextNotes
+            ))
 
-        if len(reducedNextNotes) > 0:
-            print("Found solution")
-            nextNote = choice(reducedNextNotes)
-        else:
-            print("No solution to what I gave. Defaulting to +2")
-            nextNote = chosenNotes[-1] + 2
+            if len(reducedNextNotes) > 0:
+                nextNote = choice(reducedNextNotes)
+            else:
+                nextNote = chosenNotes[-1] + 2
 
-        chosenNotes.append(
-            nextNote
-        )
+            chosenNotes.append(
+                nextNote
+            )
+
+        if chosenNotes[-1] == allowedNotes[4]:
+            break
 
     # set notes to melodypresets bars
     currId = 0
@@ -414,11 +428,38 @@ def GenerateSingleChannelStrophicWithNoteInScaleRestriction():
         Instrument="Glockenspiel"
     )
 
+    tFrozen = deepcopy(t)
     for i in range(3):
-        t += t
+        t += tFrozen
+
+    rhythmicPreset = [
+        {
+            "Beat": 0.0,
+            "Duration": 1.0
+        },
+        {
+            "Beat": 2.0,
+            "Duration": 1.0
+        },
+        {
+            "Beat": 3.0,
+            "Duration": 1.0
+        }
+    ]
+
+    rpBar = GenerateBarFromRhythmicPreset(rhythmicPreset)
+    drumsTrack = Track(
+        Bars=[rpBar],
+        IsDrumsTrack=True
+    )
+    frozenDrums = deepcopy(drumsTrack)
+    while len(drumsTrack.Bars) < len(t.Bars):
+        drumsTrack += frozenDrums
+
 
     song = Song(
-        Tracks=[t]
+        Tracks=[t, drumsTrack],
+        Tempo=120
     )
 
     return song
