@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from MidiStructurer.Components import Bar, GenerateBarFromRhythmicPreset
-from NewUtils import ComputeCumulativeProbabilitiesFromDict
+from utils import ComputeCumulativeProbabilitiesFromDict
 
 from random import random, choice
 from copy import deepcopy
@@ -25,6 +25,11 @@ class RhythmicGeneratorInterface(object):
 
     def GenerateBar(self):
         return NotImplemented
+
+    @staticmethod
+    def GenerateBreak():
+        # Use this to get an empty bar, could serve as break in between generated segments
+        return Bar()
 
 
 # Add a GenerateSection, which has in payload a definition of bars successions (for example: [0, 0, 1, 2])
@@ -187,9 +192,8 @@ class RhythmicModel(RhythmicGeneratorInterface):
                     break
 
                 nbTries += 1
-                if nbTries >= 100:
+                if nbTries >= 50:
                     print("Cannot find Solution. Switching between Silences and Notes")
-                    nbTries = 0
                     if drewSilence:
                         currDurations = self.NotesDurations
                         currProbabilities = self.NotesProbabilities
@@ -198,6 +202,13 @@ class RhythmicModel(RhythmicGeneratorInterface):
                         currDurations = self.SilencesDurations
                         currProbabilities = self.SilencesProbabilities
                         drewSilence = True
+
+                if nbTries >= 100:
+                    print("Cannot fulfill exit conditions, mismatched Generator specs.")
+                    print("Exiting generation loop, think about providing more granularity for model: {}".format(self))
+                    print("Returning BarPreset generated until now")
+                    print()
+                    break
 
         return barPreset
 

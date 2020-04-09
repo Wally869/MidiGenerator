@@ -1,7 +1,7 @@
 {
   "Name": "TestRhythmicPreset1",
   "Tags": ["Test"],
-  "Beats": 4,
+  "NbBeats": 4,
   "MainPreset": [
     {
       "beat": 0.0,
