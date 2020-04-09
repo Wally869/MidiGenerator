@@ -2,22 +2,17 @@ from __future__ import annotations
 
 from MidiStructurer.Components.Structure import Bar, Track
 from MidiStructurer.Components.Notes import Note, CreateNoteFromHeight
-from MidiStructurer.Drums import GetHeightFromDrums
+from MidiStructurer.Drums import GetHeightFromDrumsInstrumentName
 
 from copy import deepcopy
 
 from typing import Dict, List
 
 
-def ConvertDrumInstrumentToNoteObject(drumInstrument: str) -> Note:
-    height = GetHeightFromDrums(drumInstrument)
+def GetNoteFromDrumInstrument(drumInstrument: str) -> Note:
+    height = GetHeightFromDrumsInstrumentName(drumInstrument)
     outNote = CreateNoteFromHeight(height)
     return outNote
-
-
-def GetNoteFromDrumInstrument(drumInstrument: str) -> Note:
-    newNote = ConvertDrumInstrumentToNoteObject(drumInstrument)
-    return newNote
 
 
 class DrumsBeatColorer(object):

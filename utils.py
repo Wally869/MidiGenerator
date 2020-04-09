@@ -2,18 +2,17 @@ from __future__ import annotations
 
 from typing import Tuple, List, Dict
 
-"""
-Expecting input in format:
-  {
-    "0.5": 0.5,
-    "1":  0.5
-  }
-  
-  Outputting array of values, and array of cumulative probabilities
-"""
-
 
 def ComputeCumulativeProbabilitiesFromDict(inputDict: Dict) -> Tuple[List[float], List[float]]:
+    """
+    Expecting input in format:
+      {
+        "0.5": 0.5,
+        "1":  0.5
+      }
+
+      Outputting array of values, and array of cumulative probabilities
+    """
     allKeys = list(inputDict.keys())
     values = [float(k) for k in allKeys]
 
