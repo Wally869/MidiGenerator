@@ -366,13 +366,14 @@ def GenerateSingleChannelStrophicWithNoteInScaleRestriction():
     """
 
     allowedIntervals = list(filter(
-        lambda elem: (elem.Quality == scaleType or elem.Quality == "Perfect") and 1 < elem.IntervalNumber <= 5, allowedIntervals
+        lambda elem: (elem.Quality == scaleType or elem.Quality == "Perfect") and 1 < elem.IntervalNumber <= 5,
+        allowedIntervals
     ))
     print("Allowed Intervals:")
     [print(interval) for interval in allowedIntervals]
     print()
 
-    #allowedNotes = scale.GetPentatonicScaleNotes()
+    # allowedNotes = scale.GetPentatonicScaleNotes()
     allowedNotes = scale.GetScaleNotesFromMode(mode="Phrygian")
 
     targetLen = sum(
@@ -384,6 +385,7 @@ def GenerateSingleChannelStrophicWithNoteInScaleRestriction():
     maxNote = allowedNotes[0] + 12
     minNote = allowedNotes[0]
 
+    nbTries = 0
     while True:
         chosenNotes = [allowedNotes[0]]
         # chosenNotes = [choice(allowedNotes)]
@@ -413,6 +415,11 @@ def GenerateSingleChannelStrophicWithNoteInScaleRestriction():
                 nextNote
             )
 
+        nbTries += 1
+        if nbTries >= 100:
+            print("Didn't find a solution. Forced a valid end ")
+            chosenNotes[-1] = allowedNotes[4]
+
         if chosenNotes[-1] == allowedNotes[4]:
             break
 
@@ -425,7 +432,7 @@ def GenerateSingleChannelStrophicWithNoteInScaleRestriction():
 
     t = Track(
         Bars=mpBars,
-        Instrument="Glockenspiel"
+        Instrument="Orchestral Harp"
     )
 
     tFrozen = deepcopy(t)
@@ -455,7 +462,6 @@ def GenerateSingleChannelStrophicWithNoteInScaleRestriction():
     frozenDrums = deepcopy(drumsTrack)
     while len(drumsTrack.Bars) < len(t.Bars):
         drumsTrack += frozenDrums
-
 
     song = Song(
         Tracks=[t, drumsTrack],

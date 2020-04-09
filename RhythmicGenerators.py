@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from random import random
-
-from MidiStructurer.Components import *
-
+from MidiStructurer.Components import Bar, GenerateBarFromRhythmicPreset
 from NewUtils import ComputeCumulativeProbabilitiesFromDict
+
+from random import random, choice
+from copy import deepcopy
+
+from typing import List, Dict, Union
 
 
 # Cleaning up previous implementations for Rhythmic Generation
@@ -15,6 +17,9 @@ from NewUtils import ComputeCumulativeProbabilitiesFromDict
 # Define an interface for inheritance and standardization of usage for different Rhythmic models
 # Or maybe even just one model? would be more dirty though
 class RhythmicGeneratorInterface(object):
+    def GenerateRandomBarPreset(self):
+        return NotImplemented
+
     def GenerateBarPreset(self):
         return NotImplemented
 
@@ -22,8 +27,76 @@ class RhythmicGeneratorInterface(object):
         return NotImplemented
 
 
+# Add a GenerateSection, which has in payload a definition of bars successions (for example: [0, 0, 1, 2])
+# Could also use combination of elements. Would be great for syncopation?
 class RhythmicPreset(RhythmicGeneratorInterface):
-    pass
+    """
+    Expecting a Dict following this example:
+    {
+        "Name": "TestRhythmicPreset1",
+        "Tags": ["Test"],
+        "Beats": 4,
+        "MainPreset": [
+            {
+                "beat": 0.0,
+                "duration": 1.0
+            },
+            {
+                "beat": 2.0,
+                "duration": 1.0
+            },
+            {
+                "beat": 3.0,
+                "duration": 0.5
+            },
+            {
+                "beat": 3.5,
+                "duration": 0.5
+            }
+        ],
+        "Variants": []
+    }
+
+    """
+    NbBeats = 4
+    Presets = []
+
+    def __init__(self, parameters: Dict):
+        self.NbBeats = parameters["NbBeats"]
+        self.Presets = [parameters["MainPreset"]] + parameters["VariantsPreset"]
+
+    def GenerateRandomBarPreset(self, payload: Dict = {}) -> List[Dict]:
+        return choice(self.Presets)
+
+    def GenerateRandomBar(self, payload: Dict = {}) -> Bar:
+        return GenerateBarFromRhythmicPreset(
+            self.GenerateRandomBarPreset(
+                payload=payload
+            )
+        )
+
+    def GenerateBarPreset(self, payload: Dict) -> List[Dict]:
+        idChosenBar = payload["ChosenBar"]
+        return self.Presets[idChosenBar]
+
+    def GenerateBar(self, payload: Dict) -> Bar:
+        # payload = {"ChosenBar": 0}
+        return GenerateBarFromRhythmicPreset(
+            self.GenerateBarPreset(
+                payload=payload
+            )
+        )
+
+    def GenerateSectionFromPattern(self, payload: Dict[str, int]) -> List[Bar]:
+        # Pattern has shape like [0, 0, 1, 0]
+        pattern = payload["Pattern"]
+        bars = [
+            self.GenerateBar(
+                {"ChosenBar": pattern[currId]}
+            ) for currId in pattern
+        ]
+
+        return bars
 
 
 class RhythmicModel(RhythmicGeneratorInterface):
@@ -73,7 +146,7 @@ class RhythmicModel(RhythmicGeneratorInterface):
         self.SilencesDurations = vals[2]
         self.SilencesProbabilities = vals[3]
 
-    def GenerateBarPreset(self, payload: Dict[str: float] = {"NbBeats": 4.0}) -> List[Dict[str: float]]:
+    def GenerateRandomBarPreset(self, payload: Dict[str: float] = {"NbBeats": 4.0}) -> List[Dict[str: float]]:
         # Extracting from payload
         nbBeats = payload["NbBeats"]
 
@@ -128,10 +201,61 @@ class RhythmicModel(RhythmicGeneratorInterface):
 
         return barPreset
 
-    def GenerateBar(self, payload: Dict[str: float]) -> Bar:
-        return Bar(
-            self.GenerateBarPreset(
+    def GenerateRandomBar(self, payload):
+        return GenerateBarFromRhythmicPreset(
+            self.GenerateRandomBarPreset(
                 payload=payload
             )
         )
 
+    def GenerateBarPreset(self, payload) -> List[Dict]:
+        return self.GenerateRandomBarPreset(
+            payload=payload
+        )
+
+    def GenerateBar(self, payload: Dict[str: float]) -> Bar:
+        return self.GenerateRandomBar(
+            payload=payload
+        )
+
+    def GenerateSectionFromPattern(self, payload: Dict[str, Union[float, List[int]]]) -> List[Bar]:
+        # Pattern has shape like [0, 0, 1, 0]
+        pattern = payload["Pattern"]
+        bars = [
+            self.GenerateBar(
+                payload=payload
+            ) for _ in range(max(pattern))
+        ]
+        section = [
+            deepcopy(bars[currId]) for currId in pattern
+        ]
+
+        return section
+
+
+# DATA FOR TESTS
+
+presetData = {
+    "Name": "TestRhythmicPreset1",
+    "Tags": ["Test"],
+    "NbBeats": 4,
+    "MainPreset": [
+        {
+            "Beat": 0.0,
+            "Duration": 1.0
+        },
+        {
+            "Beat": 2.0,
+            "Duration": 1.0
+        },
+        {
+            "Beat": 3.0,
+            "Duration": 0.5
+        },
+        {
+            "Beat": 3.5,
+            "Duration": 0.5
+        }
+    ],
+    "VariantsPreset": []
+}
