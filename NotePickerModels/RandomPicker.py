@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+from MidiStructurer.Components import Note
 
 from .NotePickerInterface import NotePickerInterface
 
@@ -18,6 +21,6 @@ class RandomPicker(NotePickerInterface):
     def ChooseRandomNextNote(self, allowedNotes):
         return choice(allowedNotes)
 
-    def ChooseNextNote(self, previousNote: str, allowedNotes: List[Dict]):
+    def ChooseNextNote(self, previousNote: str, allowedNotes: List[Dict]) -> Note:
         return self.ChooseRandomNextNote(allowedNotes)
 

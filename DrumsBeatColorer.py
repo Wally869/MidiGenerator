@@ -42,10 +42,11 @@ class DrumsBeatColorer(object):
     }
     """
 
-    BeatsValueToBeatsClassified = {}
-    DrumsInstruments = {}
-
     def __init__(self, specs: Dict):
+        # Dicts are mutable so DO NOT SET THEM as cls property
+        self.BeatsValueToBeatsClassified = {}
+        self.DrumsInstruments = {}
+
         self.DrumsInstruments = specs["DrumsInstruments"]
         self.SetBeatsDecomposition(specs["BeatsDecomposition"])
 
@@ -68,6 +69,7 @@ class DrumsBeatColorer(object):
             2.0: ["Secondary"]
             }
         """
+        self.BeatsValueToBeatsClassified = {}
         for key in list(beatsDecomposition.keys()):
             for val in beatsDecomposition[key]:
                 if val in list(self.BeatsValueToBeatsClassified.keys()):
@@ -100,19 +102,27 @@ class DrumsBeatColorer(object):
 
         return outInstruments
 
+    def PrepareBar(self, inputBar: Bar) -> Bar:
+        newBar = Bar()
+        for se in inputBar.SoundEvents:
+            noteInstruments = self.CheckInstrumentsForBeat(se.Beat)
+            for instrument in noteInstruments:
+                newSoundEvent = deepcopy(se)
+                newSoundEvent.Note = GetNoteFromDrumInstrument(instrument)
+                newBar.SoundEvents.append(newSoundEvent)
+
+        return newBar
+
     def PrepareTrack(self, track: Track) -> None:
         """
         Set drums instruments to notes, depending on beat
         """
         newBars = []
         for bar in track.Bars:
-            currBar = Bar()
-            for se in bar.SoundEvents:
-                noteInstruments = self.CheckInstrumentsForBeat(se.Beat)
-                for instrument in noteInstruments:
-                    newSoundEvent = deepcopy(se)
-                    newSoundEvent.Note = GetNoteFromDrumInstrument(instrument)
-                    currBar.SoundEvents.append(newSoundEvent)
-            newBars.append(currBar)
+            newBars.append(
+                self.PrepareBar(
+                    bar
+                )
+            )
 
         track.Bars = newBars

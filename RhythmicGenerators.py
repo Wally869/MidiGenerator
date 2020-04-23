@@ -92,7 +92,7 @@ class RhythmicPreset(RhythmicGeneratorInterface):
             )
         )
 
-    def GenerateSectionFromPattern(self, payload: Dict[str, int]) -> List[Bar]:
+    def GenerateSectionFromPattern(self, payload: Dict[str, List[int]]) -> List[Bar]:
         # Pattern has shape like [0, 0, 1, 0]
         pattern = payload["Pattern"]
         bars = [
@@ -235,7 +235,7 @@ class RhythmicModel(RhythmicGeneratorInterface):
         bars = [
             self.GenerateBar(
                 payload=payload
-            ) for _ in range(max(pattern))
+            ) for _ in range(max(pattern) + 1)
         ]
         section = [
             deepcopy(bars[currId]) for currId in pattern
@@ -244,29 +244,4 @@ class RhythmicModel(RhythmicGeneratorInterface):
         return section
 
 
-# DATA FOR TESTS
 
-presetData = {
-    "Name": "TestRhythmicPreset1",
-    "Tags": ["Test"],
-    "NbBeats": 4,
-    "MainPreset": [
-        {
-            "Beat": 0.0,
-            "Duration": 1.0
-        },
-        {
-            "Beat": 2.0,
-            "Duration": 1.0
-        },
-        {
-            "Beat": 3.0,
-            "Duration": 0.5
-        },
-        {
-            "Beat": 3.5,
-            "Duration": 0.5
-        }
-    ],
-    "VariantsPreset": []
-}

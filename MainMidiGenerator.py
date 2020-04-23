@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from LocalDB import ConnectToDB
+from Database.LocalDB import ConnectToDB
 
 # Take MainParameters object as input for main function
 # put placeholder for now for annotations
