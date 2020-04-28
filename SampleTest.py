@@ -216,7 +216,9 @@ def GenerateSimpleStrophic():
         [len(b.SoundEvents) for b in mpBars]
     )
 
-    allowedNotes = scale.GetScaleNotes()
+    # allowedNotes = scale.GetScaleNotes()
+    allowedNotes = scale.GetPentatonicScaleNotes()
+    allowedNotes = ExtendScaleNotes(allowedNotes, 2)
     maxNote = allowedNotes[0] + 12
     minNote = allowedNotes[0] - 5
 
@@ -300,7 +302,7 @@ def GenerateSimpleStrophic():
     return s
 
 
-def GenerateSingleChannelStrophicWithNoteInScaleRestriction():
+def GenerateMultiChannelStrophicWithNoteInScaleRestriction():
     melodyPreset1 = [
         {
             "Beat": 0.0,
@@ -341,8 +343,8 @@ def GenerateSingleChannelStrophicWithNoteInScaleRestriction():
 
     melodyPresets = [
         melodyPreset1,
-        melodyPreset2,
-        melodyPreset1
+        melodyPreset2 #,
+        # melodyPreset1
     ]
 
     melodyPresets += melodyPresets
@@ -353,6 +355,7 @@ def GenerateSingleChannelStrophicWithNoteInScaleRestriction():
     ]
 
     scaleType = choice(["Major", "Minor"])
+    #scaleType = "MinorMelodic"
     scale = ScaleSpecs(
         RefNote=choice(ALL_NOTES),  # "C",
         ScaleType=scaleType
@@ -374,7 +377,10 @@ def GenerateSingleChannelStrophicWithNoteInScaleRestriction():
     print()
 
     # allowedNotes = scale.GetPentatonicScaleNotes()
-    allowedNotes = scale.GetScaleNotesFromMode(mode="Phrygian")
+    allowedNotes = scale.GetPentatonicScaleNotes(mode=choice(ScaleModes.GetAllNames()))
+    #allowedNotes = scale.GetScaleNotes(mode=choice(ScaleModes.GetAllNames()))
+    #allowedNotes = scale.GetScaleNotes(mode="Phrygian")
+    allowedNotes = ExtendScaleNotes(allowedNotes, 1)
 
     targetLen = sum(
         [
@@ -390,8 +396,18 @@ def GenerateSingleChannelStrophicWithNoteInScaleRestriction():
         chosenNotes = [allowedNotes[0]]
         # chosenNotes = [choice(allowedNotes)]
         while len(chosenNotes) < targetLen:
-            potentialPositiveIntervals = chosenNotes[-1].GetValidIntervalsFromSelected(allowedIntervals, True)
-            potentialNegativeIntervals = chosenNotes[-1].GetValidIntervalsFromSelected(allowedIntervals, False)
+            #potentialPositiveIntervals = chosenNotes[-1].GetValidIntervalsFromSelected(allowedIntervals, True)
+            potentialPositiveIntervals = Interval.GetValidIntervals(
+                chosenNotes[-1],
+                allowedIntervals,
+                True
+            )
+            #potentialNegativeIntervals = chosenNotes[-1].GetValidIntervalsFromSelected(allowedIntervals, False)
+            potentialNegativeIntervals = Interval.GetValidIntervals(
+                chosenNotes[-1],
+                allowedIntervals,
+                False
+            )
 
             # get potential end notes on these intervals
             potentialNextNotes = [
@@ -416,7 +432,7 @@ def GenerateSingleChannelStrophicWithNoteInScaleRestriction():
             )
 
         nbTries += 1
-        if nbTries >= 100:
+        if nbTries >= 25:
             print("Didn't find a solution. Forced a valid end ")
             chosenNotes[-1] = allowedNotes[4]
 
@@ -435,9 +451,30 @@ def GenerateSingleChannelStrophicWithNoteInScaleRestriction():
         Instrument="Orchestral Harp"
     )
 
+
     tFrozen = deepcopy(t)
     for i in range(3):
         t += tFrozen
+
+    accompBars = []
+    interval = Interval(5, "Perfect")
+    for bar in t.Bars:
+        se = deepcopy(bar.SoundEvents[0])
+        n, _ = se.Note + interval
+        #n2 = se.Note + 8
+        se1 = deepcopy(se)
+        se1.Note = n
+        #se2 = deepcopy(se)
+        #se2.Note = n2
+        accompBars.append(
+            Bar(SoundEvents=[se1])#, se2])
+        )
+
+    taccomp = Track(
+        Bars=accompBars,
+        Instrument="Orchestral Harp",
+        Velocity=40
+    )
 
     rhythmicPreset = [
         {
@@ -464,8 +501,8 @@ def GenerateSingleChannelStrophicWithNoteInScaleRestriction():
         drumsTrack += frozenDrums
 
     song = Song(
-        Tracks=[t, drumsTrack],
-        Tempo=120
+        Tracks=[t, taccomp, drumsTrack],
+        Tempo=100
     )
 
     return song
@@ -475,5 +512,5 @@ if __name__ == "__main__":
     # GenerateExample1()
     # GenerateExample2()
     # s = GenerateSimpleStrophic()
-    s = GenerateSingleChannelStrophicWithNoteInScaleRestriction()
+    s = GenerateMultiChannelStrophicWithNoteInScaleRestriction()
     MidoConverter.ConvertSong(s, "strophic.mid")

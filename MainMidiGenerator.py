@@ -12,7 +12,7 @@ SongSegments = [
     "PreChorus",
     "Chorus",
     "Bridge",
-    "Outro"#, Solo
+    "Outro"  # , Solo
 
 ]
 
@@ -26,11 +26,8 @@ class Structure(object):
 
 
 def MainGeneratorFunction(params: MainParameters):
-    connDB = ConnectToDB()
+    connDB = ConnectToDB("Database/db.json")
     # get params from db?
     # from params, i get stuff from the db, to create the models used
     # ignore db for now
-
-    structure = GenerateStructureSong(params)
-
-
+    # structure = GenerateStructureSong(params)

@@ -118,4 +118,5 @@ chords succession don't necessarily loop. Whatev? (im thinking of bassline gener
 
 ###########
 from https://method-behind-the-music.com/theory/intervals/
-Consonant intervals are intervals that are stable. These intervals require no resolution. The consonant intervals are P1, m3, M3, P5, M6, and P8. All other intervals within the octave are said to be dissonant. Dissonant intervals are tense, and require resolution.
+Consonant intervals are intervals that are stable. These intervals require no resolution. The consonant intervals are P1, m3, M3, P5, M6, and P8. 
+All other intervals within the octave are said to be dissonant. Dissonant intervals are tense, and require resolution.

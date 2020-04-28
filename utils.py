@@ -31,3 +31,30 @@ def ComputeCumulativeProbabilitiesFromDict(inputDict: Dict) -> Tuple[List[float]
         cumProbas.append(currCumProba)
 
     return values, cumProbas
+
+
+# Emulate List
+class CustomList(object):
+    def __init__(self, elements: List = []):
+        self.Elements = elements
+
+    def __repr__(self):
+        return self.Elements.__repr__()
+
+    def __len__(self):
+        return len(self.Elements)
+
+    def __getitem__(self, item):
+        return self.Elements[item]
+
+    def __add__(self, other):
+        if type(other) == list:
+            self.Elements += other
+        elif self.__class__ is other.__class__:
+            self.Elements += other.Elements
+        else:
+            raise NotImplemented
+
+    def append(self, item):
+        self.Elements.append(item)
+

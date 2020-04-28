@@ -1,8 +1,6 @@
-
 from .NotePickerInterface import NotePickerInterface
-import MidiStructurer.ScalesUtils as su
 
-from .utils import ComputeCumulativeProbabilities, PickFromCumulativeArray
+from .utils import ComputeCumulativeProbabilities, PickFromCumulativeArray, FindIdElemInList
 
 from random import choice
 from typing import List, Dict
@@ -20,7 +18,7 @@ DecayFactor in [0, 1.0]
 
 
 class DistancePicker(NotePickerInterface):
-    DecayFactor = 1.0
+    DecayFactor = 0.7
 
     def InitializeModelFromPayload(self, payload: Dict):
         self.DecayFactor = payload["DecayFactor"]
@@ -29,7 +27,7 @@ class DistancePicker(NotePickerInterface):
         return choice(allowedNotes)
 
     def ChooseNextNote(self, previousNote: str, allowedNotes: List[Dict]) -> Dict:
-        refId = su.FindNoteIdInScaleWithOctaveNotation(previousNote, allowedNotes)
+        refId = FindIdElemInList(previousNote, allowedNotes)
         probas = self.ComputeDecayingProbabilities(refId, len(allowedNotes))
         cum_probas = ComputeCumulativeProbabilities(probas)
         idNoteChosen = PickFromCumulativeArray(cum_probas)
@@ -48,15 +46,12 @@ class DistancePicker(NotePickerInterface):
 
         currProba = 1.0
         currId = idRefNote
-        while currId < lenProbas-1:
+        while currId < lenProbas - 1:
             currId += 1
             currProba *= self.DecayFactor
             probas[currId] = currProba
 
         # scale to 1
-        scaledProbas = [p/sum(probas) for p in probas]
+        scaledProbas = [p / sum(probas) for p in probas]
 
         return scaledProbas
-
-
-

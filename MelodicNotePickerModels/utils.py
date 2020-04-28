@@ -1,7 +1,7 @@
-
 from random import random
 
 from typing import List
+
 
 def ComputeCumulativeProbabilities(probas: List[float]) -> List[float]:
     cum_probas = [probas[0]]
@@ -10,6 +10,7 @@ def ComputeCumulativeProbabilities(probas: List[float]) -> List[float]:
 
     return cum_probas
 
+
 def PickFromCumulativeArray(probas: List[float]) -> int:
     drawn = random()
     for id_chosen in range(len(probas)):
@@ -17,3 +18,10 @@ def PickFromCumulativeArray(probas: List[float]) -> int:
             break
 
     return id_chosen
+
+
+def FindIdElemInList(elem, array):
+    for key, val in enumerate(array):
+        if val == elem:
+            return key
+    raise KeyError("Element not in List")

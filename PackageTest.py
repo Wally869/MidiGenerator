@@ -1,6 +1,6 @@
 # testing everything in the package to make sure it works
 
-from MidiStructurer.Components import Bar, Track
+from MidiStructurer import *
 
 # RhythmicGenerators
 from RhythmicGenerators import *
