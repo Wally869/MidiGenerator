@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from MidiStructurer.Components import Note
 
-from .NotePickerInterface import NotePickerInterface
+from .MelodicNotePickerInterface import MelodicNotePickerInterface
 
 from random import choice
 from typing import List, Dict
@@ -14,7 +14,7 @@ payload = {
 }
 
 """
-class RandomPicker(NotePickerInterface):
+class RandomPickerMelodic(MelodicNotePickerInterface):
     def InitializeModelFromPayload(self, payload: Dict = {}):
         pass
 

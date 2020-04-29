@@ -1,10 +1,10 @@
-
 from random import choice
 from typing import List, Dict
 
+
 # Placeholder for initialization
 # Not sur what I'll do with it so clean later
-class NotePickerInterface:
+class AccompanimentNotePickerInterface:
     def __init__(self, payload):
         self.InitializeModelFromPayload(payload)
 
@@ -17,3 +17,5 @@ class NotePickerInterface:
     def ChooseNextNote(self):
         raise NotImplementedError
 
+    def GenerateNextBar(self):
+        raise NotImplementedError

@@ -1,4 +1,4 @@
-from .NotePickerInterface import NotePickerInterface
+from .MelodicNotePickerInterface import MelodicNotePickerInterface
 
 from .utils import ComputeCumulativeProbabilities, PickFromCumulativeArray, FindIdElemInList
 
@@ -17,7 +17,7 @@ DecayFactor in [0, 1.0]
 """
 
 
-class DistancePicker(NotePickerInterface):
+class DistancePickerMelodic(MelodicNotePickerInterface):
     DecayFactor = 0.7
 
     def InitializeModelFromPayload(self, payload: Dict):

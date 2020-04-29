@@ -172,7 +172,7 @@ def GenerateNotes(component: SectionComponent, generator, allowedNotes, dependen
             chord = Chord([Interval(3, "Major"), Interval(5, "Perfect")])
             if len(b.SoundEvents) > 0:
                 refNote = _deepcopy(b.SoundEvents[0].Note)
-                notes = chord(refNote)
+                notes, _ = chord(refNote)
                 soundEvents = []
                 for n in notes:
                     curr = _deepcopy(refSE)

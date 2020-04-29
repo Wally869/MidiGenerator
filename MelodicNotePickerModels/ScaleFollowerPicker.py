@@ -1,5 +1,5 @@
 
-from .NotePickerInterface import NotePickerInterface
+from .MelodicNotePickerInterface import MelodicNotePickerInterface
 
 from .utils import FindIdElemInList
 
@@ -15,7 +15,7 @@ payload = {
 
 """
 
-class ScaleFollowerPicker(NotePickerInterface):
+class ScaleFollowerPickerMelodic(MelodicNotePickerInterface):
     Reversed = False
     Skip = 0
 

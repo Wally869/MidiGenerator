@@ -5,7 +5,7 @@ from SectionComponents import *
 from Database.LocalDB import *
 from RhythmicGenerators import RhythmicPreset, RhythmicModel
 
-from MelodicNotePickerModels.RandomPicker import RandomPicker
+from MelodicNotePickerModels.RandomPicker import RandomPickerMelodic
 
 
 from random import choice
@@ -50,7 +50,7 @@ def testo():
     rhythmGenerators["Melody"] = rm
     notesGenerators = {}
 
-    notesGen = RandomPicker({})
+    notesGen = RandomPickerMelodic({})
     """
     notesGen.InitializeModelFromPayload(
         {
