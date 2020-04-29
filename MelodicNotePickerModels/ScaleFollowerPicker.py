@@ -1,7 +1,8 @@
 
 from .NotePickerInterface import NotePickerInterface
 
-import MidiStructurer.ScalesUtils as su
+from .utils import FindIdElemInList
+
 from typing import List, Dict
 
 """
@@ -23,7 +24,7 @@ class ScaleFollowerPicker(NotePickerInterface):
         self.Skip = payload["Skip"]
 
     def ChooseNextNote(self, previousNote: str, allowedNotes: List[Dict]) -> Dict:
-        refId = su.FindNoteIdInScaleWithOctaveNotation(previousNote, allowedNotes)
+        refId = FindIdElemInList(previousNote, allowedNotes)
 
         signDelta = 1
         if self.Reversed:
