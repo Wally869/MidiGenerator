@@ -1,4 +1,3 @@
-
 from .MelodicNotePickerInterface import MelodicNotePickerInterface
 
 from .utils import FindIdElemInList
@@ -15,9 +14,16 @@ payload = {
 
 """
 
+
 class ScaleFollowerPickerMelodic(MelodicNotePickerInterface):
     Reversed = False
     Skip = 0
+
+    def __str__(self):
+        return "<class 'ScaleFollowerPickerMelodic'>"
+
+    def __repr__(self):
+        return self.__str__()
 
     def InitializeModelFromPayload(self, payload: Dict):
         self.Reversed = payload["Reversed"]
@@ -37,5 +43,3 @@ class ScaleFollowerPickerMelodic(MelodicNotePickerInterface):
             newId += len(allowedNotes)
 
         return allowedNotes[newId]
-
-

@@ -5,7 +5,7 @@ from SectionComponents import *
 from Database.LocalDB import *
 from RhythmicGenerators import RhythmicPreset, RhythmicModel
 
-from MelodicNotePickerModels.RandomPicker import RandomPickerMelodic
+from MelodicModels.RandomPicker import RandomPickerMelodic
 
 
 from random import choice

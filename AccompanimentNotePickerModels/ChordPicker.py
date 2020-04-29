@@ -13,7 +13,7 @@ class ChordPicker(AccompanimentNotePickerInterface):
     payload = {
         AllowedChords: List[Chord],
         ExcludeRootNote: bool,
-        BeatsPicked: str  # values in ["One", "Two", "All"]
+        BeatsPicked: str  # values in ["First", "Two", "All"]
     }
 
     for BeatsPicked:
@@ -41,18 +41,37 @@ class ChordPicker(AccompanimentNotePickerInterface):
         from copy import deepcopy as _deepcopy
         from random import choice as _choice
 
+        # check first if nothing in referenceBar
+        if len(referenceBar.SoundEvents) == 0:
+            return []
+
         generatedChordSoundEvents = []
         if self.BeatsPicked == "All":
             soundEvents = _deepcopy(referenceBar.SoundEvents)
-        elif self.BeatsPicked == "One":
+        elif self.BeatsPicked == "First":
             soundEvents = [_deepcopy(referenceBar.SoundEvents[0])]
-            # check valid length
-            if len(soundEvents) == 0:
-                return
         else:
             # two sound events, harder to implement...
-            # PLACEHOLDER
+            # Check if only size one
             soundEvents = _deepcopy(referenceBar.SoundEvents)
+            if len(soundEvents) > 2:
+                # 1 or 2 Sound events, nothing to do
+                # else gotta do some stuff
+                # compute estimated nb of beats
+                nbBeatsEstimated = soundEvents[-1].Beat + soundEvents[-1].Duration
+                # get the beat that is closest to and higher than half of nbBeatsEstimated
+                target = nbBeatsEstimated / 2
+                closest = None
+                closestDelta = 999
+                for s in soundEvents:
+                    if closest is None:
+                        closest = s
+                    else:
+                        delta = s.Beat - target
+                        if 0 < delta < closestDelta:
+                            closestDelta = delta
+                            closest = s
+                soundEvents = [soundEvents[0], closest]
 
         for se in soundEvents:
             # Get a valid chord

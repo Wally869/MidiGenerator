@@ -8,6 +8,12 @@ class MelodicNotePickerInterface:
     def __init__(self, payload):
         self.InitializeModelFromPayload(payload)
 
+    def __str__(self):
+        return "<class 'MelodicNotePickerInterface'>"
+
+    def __repr__(self):
+        return self.__str__()
+
     def InitializeModelFromPayload(self):
         raise NotImplementedError
 

@@ -20,6 +20,12 @@ DecayFactor in [0, 1.0]
 class DistancePickerMelodic(MelodicNotePickerInterface):
     DecayFactor = 0.7
 
+    def __str__(self):
+        return "<class 'DistancePickerMelodic'>"
+
+    def __repr__(self):
+        return self.__str__()
+
     def InitializeModelFromPayload(self, payload: Dict):
         self.DecayFactor = payload["DecayFactor"]
 
