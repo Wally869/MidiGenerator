@@ -4,18 +4,12 @@ from MidiStructurer.Components import Bar, GenerateBarFromRhythmicPreset
 from utils import ComputeCumulativeProbabilitiesFromDict
 
 from random import random, choice
+from math import ceil
 from copy import deepcopy
 
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Tuple
 
 
-# Cleaning up previous implementations for Rhythmic Generation
-# Getting rid of previous stuff about json, should be handled somewhere else
-# Also, would be nice to follow an interface for both types (model & preset) to make
-# them easier to use
-
-# Define an interface for inheritance and standardization of usage for different Rhythmic models
-# Or maybe even just one model? would be more dirty though
 class RhythmicGeneratorInterface(object):
     def __str__(self):
         return "<class 'RhythmicGeneratorInterface'>"
@@ -23,23 +17,18 @@ class RhythmicGeneratorInterface(object):
     def __repr__(self):
         return self.__str__()
 
-    def GenerateRandomBarPreset(self):
-        return NotImplemented
-
-    def GenerateBarPreset(self):
-        return NotImplemented
-
-    def GenerateBar(self):
-        return NotImplemented
-
     @staticmethod
     def GenerateBreak():
         # Use this to get an empty bar, could serve as break in between generated segments
         return Bar()
 
+    @staticmethod
+    def GeneratePattern(nbBars: int) -> Tuple[int, List[int]]:
+        # how many different bars? use square root of nb bars
+        nbSegments = ceil(nbBars ** 0.5)
+        return nbSegments, [choice(range(nbSegments)) for _ in range(nbBars)]
 
-# Add a GenerateSection, which has in payload a definition of bars successions (for example: [0, 0, 1, 2])
-# Could also use combination of elements. Would be great for syncopation?
+
 class RhythmicPreset(RhythmicGeneratorInterface):
     """
     Expecting a Dict following this example:
@@ -81,10 +70,13 @@ class RhythmicPreset(RhythmicGeneratorInterface):
     def __repr__(self):
         return self.__str__()
 
-    def __call__(self, nbBars: int, pattern: List[int] = [], **kwargs):
+    # override generatepattern
+    def GeneratePattern(self, nbBars: int) -> List[int]:
+        return [choice(range(len(self.Presets))) for _ in range(nbBars)]
+
+    def __call__(self, nbBars: int, nbBeats: float = 4.0, pattern: List[int] = [], **kwargs):
         if pattern == []:
-            # generate a pattern
-            pattern = [choice(range(len(self.Presets))) for _ in range(nbBars)]
+            pattern = self.GeneratePattern(nbBars)
         return [
             GenerateBarFromRhythmicPreset(
                 self.Presets[idPreset]
@@ -126,6 +118,18 @@ class RhythmicModel(RhythmicGeneratorInterface):
     def __repr__(self):
         return self.__str__()
 
+    def __call__(self, nbBars: int, nbBeats: float = 4.0, pattern: List[int] = [], **kwargs):
+        if pattern == []:
+            nbSegments, pattern = self.GeneratePattern(nbBars)
+        else:
+            nbSegments = max(pattern) + 1
+
+        generatedSegments = [
+            self.GenerateBar(nbBeats) for _ in range(nbSegments)
+        ]
+
+        return [generatedSegments[idPattern] for idPattern in pattern]
+
     def CheckAndSetProbabilities(self, parameters: Dict):
         vals = []
         for k in ["Notes", "Silences"]:
@@ -138,10 +142,7 @@ class RhythmicModel(RhythmicGeneratorInterface):
         self.SilencesDurations = vals[2]
         self.SilencesProbabilities = vals[3]
 
-    def GenerateRandomBarPreset(self, payload: Dict[str: float] = {"NbBeats": 4.0}) -> List[Dict[str: float]]:
-        # Extracting from payload
-        nbBeats = payload["NbBeats"]
-
+    def GeneratePreset(self, nbBeats: int):
         barPreset = []
         sumDurations = 0.0
 
@@ -199,33 +200,7 @@ class RhythmicModel(RhythmicGeneratorInterface):
 
         return barPreset
 
-    def GenerateRandomBar(self, payload):
+    def GenerateBar(self, nbBeats: float) -> Bar:
         return GenerateBarFromRhythmicPreset(
-            self.GenerateRandomBarPreset(
-                payload=payload
-            )
+            self.GeneratePreset(nbBeats)
         )
-
-    def GenerateBarPreset(self, payload) -> List[Dict]:
-        return self.GenerateRandomBarPreset(
-            payload=payload
-        )
-
-    def GenerateBar(self, payload: Dict[str: float]) -> Bar:
-        return self.GenerateRandomBar(
-            payload=payload
-        )
-
-    def GenerateSectionFromPattern(self, payload: Dict[str, Union[float, List[int]]]) -> List[Bar]:
-        # Pattern has shape like [0, 0, 1, 0]
-        pattern = payload["Pattern"]
-        bars = [
-            self.GenerateBar(
-                payload=payload
-            ) for _ in range(max(pattern) + 1)
-        ]
-        section = [
-            deepcopy(bars[currId]) for currId in pattern
-        ]
-
-        return section

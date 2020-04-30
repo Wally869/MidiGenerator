@@ -90,6 +90,8 @@ def testo():
         # notes selection, getting generators from pool...
         allowedNotes = section.Scale.GetScaleNotes(referenceOctave=4)
         nbBars = 4
+        nbBeats = 4
+        pattern = [0, 0, 1, 0]
         rhythmicPayload = {
             "Pattern": [0, 0, 1, 0],
             "NbBeats": 4
@@ -99,7 +101,7 @@ def testo():
         for comp in section.Components:
             currRhythmGenerator = rhythmGenerators[comp.Type]
             # print(comp.Type, currRhythmGenerator)
-            GenerateRhythm(comp, currRhythmGenerator, rhythmicPayload, nbBars)
+            comp.Bars = currRhythmGenerator(nbBars=nbBars, nbBeats=nbBeats, pattern=pattern)
 
         # then generate notes in similar fashion
         melodicComponent = list(filter(

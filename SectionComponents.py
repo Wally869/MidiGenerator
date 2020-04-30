@@ -85,13 +85,3 @@ class SectionSpecs(object):
 
     def __repr__(self):
         return self.__str__()
-
-
-def GenerateRhythm(component: SectionComponent, generator, payload, nbBars) -> SectionComponent:
-    if not component.DependentOnMelody:
-        component.Bars = [
-            generator.GenerateRandomBar(payload) for _ in range(nbBars)
-        ]
-        # component.Bars = generator.GenerateSectionFromPattern(payload)
-    else:
-        component.Bars = [Bar() for _ in range(nbBars)]
