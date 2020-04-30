@@ -68,6 +68,8 @@ class DrumsBeatColorer(object):
             0.0: ["Primary", "Secondary"],
             2.0: ["Secondary"]
             }
+
+            NOTE: 0.0 and 0 are considered the same thing when used as key in a dict
         """
         self.BeatsValueToBeatsClassified = {}
         for key in list(beatsDecomposition.keys()):

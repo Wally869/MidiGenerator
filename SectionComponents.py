@@ -8,59 +8,12 @@ from typing import List
 COMPONENTS_PARAMETERS_TYPES = ["Melody", "AccompanimentChord", "AccompanimentArpeggiato", "Bass", "Drums"]
 
 
-class ComponentTypeTracker(object):
-    # Values
-    Melody = 0
-    AccompanimentChord = 0
-    AccompanimentArpeggiato = 0
-    Bass = 0
-    Drums = 0
-
-    def __getitem__(self, item):
-        return eval("self.{}".format(item))
-
-    def Increment(self, item):
-        if item == "Melody":
-            self.Melody += 1
-        elif item == "AccompanimentChord":
-            self.AccompanimentChord += 1
-        elif item == "AccompanimentArpeggiato":
-            self.AccompanimentArpeggiato += 1
-        elif item == "Bass":
-            self.Bass += 1
-        elif item == "Drums":
-            self.Drums += 1
-
-
 @dataclass
 class SectionComponent:
     Type: str = ""  # "Melody"
     Instrument: str = ""
     Bars: List = field(default_factory=list)
     DependentOnMelody: bool = False
-
-
-"""
-    def GenerateRhythm(self, generator, nbBars: int = 4):
-        if not self.DependentOnMelody:
-            self.Bars = [
-                generator.GenerateRandomBar() for _ in nbBars
-            ]
-        else:
-            self.Bars = [Bar() for _ in range(nbBars)]
-
-    def GenerateNotes(self, generator, dependency=None):
-        if self.DependentOnMelody:
-            for i in range(len(self.Bars)):
-                self.Bars[i] = generator.GenerateBar(dependency.Bars[i])
-        else:
-            allowedNotes = []
-            prevNote = None
-            for b in self.Bars:
-                for se in b.SoundEvents:
-                    se.Note = generator.ChooseNextNote(prevNote, allowedNotes)
-                    prevNote = se.Note
-"""
 
 
 class Section(object):
@@ -114,9 +67,6 @@ class Section(object):
             )
 
 
-# much better i think?
-
-
 dfltInstruments = {
     field: "Acoustic Grand Piano" for field in COMPONENTS_PARAMETERS_TYPES
 }
@@ -137,13 +87,6 @@ class SectionSpecs(object):
         return self.__str__()
 
 
-specs = SectionSpecs(
-    ComponentsParameters=[1, 1, 0, 1, 1]
-)
-
-intro = Section("Intro", 0, specs, 2)
-
-
 def GenerateRhythm(component: SectionComponent, generator, payload, nbBars) -> SectionComponent:
     if not component.DependentOnMelody:
         component.Bars = [
@@ -152,33 +95,3 @@ def GenerateRhythm(component: SectionComponent, generator, payload, nbBars) -> S
         # component.Bars = generator.GenerateSectionFromPattern(payload)
     else:
         component.Bars = [Bar() for _ in range(nbBars)]
-
-
-def GenerateNotes(component: SectionComponent, generator, allowedNotes, dependency=None) -> SectionComponent:
-    if component.DependentOnMelody and dependency is not None:
-        from copy import deepcopy as _deepcopy
-        bars = []
-        for b in dependency.Bars:
-            # component.Bars[i] = generator.GenerateBar(component.Bars[i])
-            refSE = _deepcopy(b.SoundEvents[0])
-            chord = Chord([Interval(3, "Major"), Interval(5, "Perfect")])
-            if len(b.SoundEvents) > 0:
-                refNote = _deepcopy(b.SoundEvents[0].Note)
-                notes, _ = chord(refNote)
-                soundEvents = []
-                for n in notes:
-                    curr = _deepcopy(refSE)
-                    curr.Note = n
-                    soundEvents.append(curr)
-            bars.append(
-                Bar(SoundEvents=soundEvents)
-            )
-        component.Bars = bars
-
-    else:
-        from random import choice as _choice
-        prevNote = _choice(allowedNotes)
-        for b in component.Bars:
-            for se in b.SoundEvents:
-                se.Note = generator.ChooseNextNote(prevNote, allowedNotes)
-                prevNote = se.Note

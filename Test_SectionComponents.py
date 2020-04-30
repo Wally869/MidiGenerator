@@ -22,7 +22,7 @@ def testo():
         "Melody": ["Acoustic Grand Piano"],
         "AccompanimentChord": ["Orchestral Harp", "Pizzicato Strings"],
         "AccompanimentArpeggiato": ["Timpani"],
-        "Bass": ["Timpani"],
+        "Bass": ["Alto Sax"],
         "Drums": ["PlaceHolder"]
     }
 
@@ -50,7 +50,6 @@ def testo():
         field: rp for field in COMPONENTS_PARAMETERS_TYPES
     }
     rhythmGenerators["Melody"] = rm
-    notesGenerators = {}
 
     # placeholder: using RandomPicker model
     rp = RandomPickerMelodic({})
@@ -89,7 +88,7 @@ def testo():
     for section in sections:
         # here I can put all the setup:
         # notes selection, getting generators from pool...
-        allowedNotes = section.Scale.GetScaleNotes()
+        allowedNotes = section.Scale.GetScaleNotes(referenceOctave=4)
         nbBars = 4
         rhythmicPayload = {
             "Pattern": [0, 0, 1, 0],
@@ -99,6 +98,7 @@ def testo():
         # Generate Rhythm
         for comp in section.Components:
             currRhythmGenerator = rhythmGenerators[comp.Type]
+            # print(comp.Type, currRhythmGenerator)
             GenerateRhythm(comp, currRhythmGenerator, rhythmicPayload, nbBars)
 
         # then generate notes in similar fashion
@@ -129,7 +129,10 @@ def testoToSong(sections):
             IsDrumsTrack=(comp.Type == "Drums"),
             Bars=comp.Bars
         )
-        s.Tracks.append(
-            t
-        )
+        s.Tracks.append(t)
     MidoConverter.ConvertSong(s, "testonew.mid")
+
+
+if __name__ == "__main__":
+    sections = testo()
+    testoToSong(sections)
