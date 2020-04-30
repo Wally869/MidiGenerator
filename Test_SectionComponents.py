@@ -17,7 +17,7 @@ COMPONENTS_PARAMETERS_TYPES = ["Melody", "AccompanimentChord", "AccompanimentArp
 # WAIT UP
 # can have NO distinction between accompaniment models and melodic models?
 # also can use a kwarg UseDependency, to allow 2 behaviour from accompaniment model?
-def testo():
+def testo(nameSection: str = "Intro"):
     allowedInstruments = {
         "Melody": ["Acoustic Grand Piano"],
         "AccompanimentChord": ["Orchestral Harp", "Pizzicato Strings"],
@@ -33,7 +33,7 @@ def testo():
     scale = ScaleSpecs()
 
     sectionSpecs = SectionSpecs(Scale=scale, ComponentsParameters=[1, 1, 0, 1, 1], Instruments=chosenInstruments)
-    section = Section("Intro", 0, sectionSpecs, 2)
+    section = Section(nameSection, 0, sectionSpecs, 2)
 
     sections = [section]
 

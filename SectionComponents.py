@@ -16,6 +16,26 @@ class SectionComponent:
     DependentOnMelody: bool = False
 
 
+dfltInstruments = {
+    field: "Acoustic Grand Piano" for field in COMPONENTS_PARAMETERS_TYPES
+}
+
+
+class SectionSpecs(object):
+    def __init__(self, Scale=None,
+                 ComponentsParameters=[1, 1, 0, 1, 1],
+                 Instruments=dfltInstruments):
+        self.Scale = Scale
+        self.ComponentsParameters = ComponentsParameters
+        self.Instruments = Instruments
+
+    def __str__(self):
+        return "<class 'SectionSpecs'>"
+
+    def __repr__(self):
+        return self.__str__()
+
+
 class Section(object):
     # get name and id out of section specs?
     def __init__(self, Name: str, idSection: int, sectionSpecs: SectionSpecs, NbSubSections: int = 1):
@@ -47,41 +67,3 @@ class Section(object):
                         DependentOnMelody=dependent
                     )
                 )
-
-    def GenerateBars(self, rhythmGenerators, notesGenerators, allowedNotes, nbBarsPerSubsection: int = 4):
-        for component in self.Components:
-            component.GenerateRhythm(
-                rhythmGenerators[component.Type],
-                nbBarsPerSubsection
-            )
-
-        melodicComponent = list(filter(
-            lambda x: x.Type == "Melodic",
-            self.Components
-        ))[0]
-
-        for component in self.Components:
-            component.GenerateNotes(
-                notesGenerators[component.Type],
-                dependency=melodicComponent
-            )
-
-
-dfltInstruments = {
-    field: "Acoustic Grand Piano" for field in COMPONENTS_PARAMETERS_TYPES
-}
-
-
-class SectionSpecs(object):
-    def __init__(self, Scale=None,
-                 ComponentsParameters=[1, 1, 0, 1, 1],
-                 Instruments=dfltInstruments):
-        self.Scale = Scale
-        self.ComponentsParameters = ComponentsParameters
-        self.Instruments = Instruments
-
-    def __str__(self):
-        return "<class 'SectionSpecs'>"
-
-    def __repr__(self):
-        return self.__str__()
