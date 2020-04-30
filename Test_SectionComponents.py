@@ -6,13 +6,17 @@ from Database.LocalDB import *
 from RhythmicGenerators import RhythmicPreset, RhythmicModel
 
 from MelodicModels.RandomPicker import RandomPickerMelodic
-
+from AccompanimentModels.ChordPicker import ChordPicker
 
 from random import choice
 
 COMPONENTS_PARAMETERS_TYPES = ["Melody", "AccompanimentChord", "AccompanimentArpeggiato", "Bass", "Drums"]
 
+
 # Looks like is working for now
+# WAIT UP
+# can have NO distinction between accompaniment models and melodic models?
+# also can use a kwarg UseDependency, to allow 2 behaviour from accompaniment model?
 def testo():
     allowedInstruments = {
         "Melody": ["Acoustic Grand Piano"],
@@ -33,16 +37,14 @@ def testo():
 
     sections = [section]
 
+    # Get Rhythmic Generator settings from Database
     conn = ConnectToDB()
     rhythmicModelSpecs = conn.QueryTableForAll("RhythmicModel")
     rhythmicPresetSpecs = conn.QueryTableForAll("RhythmicPreset")
 
+    # Generate the Rhythmic models from the settings
     rm = RhythmicModel(rhythmicModelSpecs[0])
     rp = RhythmicPreset(rhythmicPresetSpecs[0])
-
-    # Get the generators
-    ##### PROBLEM
-    # should I just extract the methods to generate rhythm and notes?
 
     rhythmGenerators = {
         field: rp for field in COMPONENTS_PARAMETERS_TYPES
@@ -50,7 +52,32 @@ def testo():
     rhythmGenerators["Melody"] = rm
     notesGenerators = {}
 
-    notesGen = RandomPickerMelodic({})
+    # placeholder: using RandomPicker model
+    rp = RandomPickerMelodic({})
+    melodyGenerators = {
+        field: rp for field in COMPONENTS_PARAMETERS_TYPES
+    }
+
+    melodyGenerators["AccompanimentChord"] = ChordPicker(
+        {
+            "AllowedChords": [
+                Chord(
+                    [
+                        Interval(3, "Major"),
+                        Interval(5, "Perfect")
+                    ]
+                ),
+                Chord(
+                    [
+                        Interval(3, "Minor"),
+                        Interval(5, "Perfect")
+                    ]
+                )
+            ],
+            "BeatsPicked": "First",
+            "RootInOutput": True
+        }
+    )
     """
     notesGen.InitializeModelFromPayload(
         {
@@ -81,10 +108,28 @@ def testo():
         ))
         if len(melodicComponent) > 0:
             melodicComponent = melodicComponent[0]
+        else:
+            melodicComponent = None
 
         for comp in section.Components:
-            currNotesGenerator = notesGen
-            #currNotesGenerator = notesGenerators[comp.Type]
-            GenerateNotes(comp, currNotesGenerator, allowedNotes, melodicComponent)
+            currNotesGenerator = melodyGenerators[comp.Type]
+            currNotesGenerator(comp.Bars, allowedNotes, DependencyBars=melodicComponent.Bars)
 
     return sections
+
+
+def testoToSong(sections):
+    if len(sections) > 1:
+        raise NotImplementedError("Not Implemented yet for more than 1 section")
+    section = sections[0]
+    s = Song()
+    for comp in section.Components:
+        t = Track(
+            Instrument=comp.Instrument,
+            IsDrumsTrack=(comp.Type == "Drums"),
+            Bars=comp.Bars
+        )
+        s.Tracks.append(
+            t
+        )
+    MidoConverter.ConvertSong(s, "testonew.mid")

@@ -1,6 +1,6 @@
 from .AccompanimentNotePickerInterface import AccompanimentNotePickerInterface
 
-from MidiStructurer.Components.Chords import Chord
+from MidiStructurer.Components import Note, Chord, Bar
 from MidiStructurer.Components.Structure import Bar, GenerateSoundEventsFromListNotes
 
 from typing import List, Dict
@@ -31,6 +31,12 @@ class ChordPicker(AccompanimentNotePickerInterface):
 
     def __repr__(self):
         return self.__str__()
+
+    def __call__(self, InputBars: List[Bar], AllowedNotes: List[Note], DependencyBars: List[Bar], **kwargs):
+        # will need to standardize calls
+        # for now, going with what I got
+        for idBar in range(len(InputBars)):
+            InputBars[idBar] = Bar(SoundEvents=self.GenerateNextBar(DependencyBars[idBar]))
 
     def InitializeModelFromPayload(self, payload: Dict):
         self.AllowedChords: List[Chord] = payload["AllowedChords"]

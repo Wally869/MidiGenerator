@@ -115,15 +115,7 @@ class Section(object):
 
 
 # much better i think?
-"""
-@dataclass
-class SectionSpecs:
-    Scale = None
-    ComponentsParameters: List[int] = None  # field(default_factory=[1, 1, 0, 1, 1])
-    Instruments = {
-        field: "Acoustic Grand Piano" for field in COMPONENTS_PARAMETERS_TYPES
-    }
-"""
+
 
 dfltInstruments = {
     field: "Acoustic Grand Piano" for field in COMPONENTS_PARAMETERS_TYPES
@@ -152,7 +144,7 @@ specs = SectionSpecs(
 intro = Section("Intro", 0, specs, 2)
 
 
-def GenerateRhythm(component: SectionComponent, generator, payload, nbBars):
+def GenerateRhythm(component: SectionComponent, generator, payload, nbBars) -> SectionComponent:
     if not component.DependentOnMelody:
         component.Bars = [
             generator.GenerateRandomBar(payload) for _ in range(nbBars)
@@ -162,7 +154,7 @@ def GenerateRhythm(component: SectionComponent, generator, payload, nbBars):
         component.Bars = [Bar() for _ in range(nbBars)]
 
 
-def GenerateNotes(component: SectionComponent, generator, allowedNotes, dependency=None):
+def GenerateNotes(component: SectionComponent, generator, allowedNotes, dependency=None) -> SectionComponent:
     if component.DependentOnMelody and dependency is not None:
         from copy import deepcopy as _deepcopy
         bars = []
