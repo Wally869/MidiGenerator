@@ -1,3 +1,4 @@
 from MelodicModels import DistancePicker
 from MelodicModels import RandomPicker
 from MelodicModels import ScaleFollowerPicker
+from MelodicModels import FromIntervalPicker
