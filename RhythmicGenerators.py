@@ -17,6 +17,12 @@ from typing import List, Dict, Union
 # Define an interface for inheritance and standardization of usage for different Rhythmic models
 # Or maybe even just one model? would be more dirty though
 class RhythmicGeneratorInterface(object):
+    def __str__(self):
+        return "<class 'RhythmicGeneratorInterface'>"
+
+    def __repr__(self):
+        return self.__str__()
+
     def GenerateRandomBarPreset(self):
         return NotImplemented
 
@@ -64,44 +70,26 @@ class RhythmicPreset(RhythmicGeneratorInterface):
 
     """
     NbBeats = 4
-    Presets = []
 
     def __init__(self, parameters: Dict):
         self.NbBeats = parameters["NbBeats"]
         self.Presets = [parameters["MainPreset"]] + parameters["VariantsPreset"]
 
-    def GenerateRandomBarPreset(self, payload: Dict = {}) -> List[Dict]:
-        return choice(self.Presets)
+    def __str__(self):
+        return "<class 'RhythmicPreset'>"
 
-    def GenerateRandomBar(self, payload: Dict = {}) -> Bar:
-        return GenerateBarFromRhythmicPreset(
-            self.GenerateRandomBarPreset(
-                payload=payload
-            )
-        )
+    def __repr__(self):
+        return self.__str__()
 
-    def GenerateBarPreset(self, payload: Dict) -> List[Dict]:
-        idChosenBar = payload["ChosenBar"]
-        return self.Presets[idChosenBar]
-
-    def GenerateBar(self, payload: Dict) -> Bar:
-        # payload = {"ChosenBar": 0}
-        return GenerateBarFromRhythmicPreset(
-            self.GenerateBarPreset(
-                payload=payload
-            )
-        )
-
-    def GenerateSectionFromPattern(self, payload: Dict[str, List[int]]) -> List[Bar]:
-        # Pattern has shape like [0, 0, 1, 0]
-        pattern = payload["Pattern"]
-        bars = [
-            self.GenerateBar(
-                {"ChosenBar": pattern[currId]}
-            ) for currId in pattern
+    def __call__(self, nbBars: int, pattern: List[int] = [], **kwargs):
+        if pattern == []:
+            # generate a pattern
+            pattern = [choice(range(len(self.Presets))) for _ in range(nbBars)]
+        return [
+            GenerateBarFromRhythmicPreset(
+                self.Presets[idPreset]
+            ) for idPreset in pattern
         ]
-
-        return bars
 
 
 class RhythmicModel(RhythmicGeneratorInterface):
@@ -120,16 +108,15 @@ class RhythmicModel(RhythmicGeneratorInterface):
     Name = ""
     SilenceChance = 0.0
 
-    # Computed at __init__
-    NotesDurations = []
-    NotesProbabilities = []
-    SilencesDurations = []
-    SilencesProbabilities = []
-
     def __init__(self, parameters: Dict):
         # Tracking Parameters
         self.Name = parameters["Name"]
         self.SilenceChance = parameters["SilenceChance"]
+
+        self.NotesDurations = []
+        self.NotesProbabilities = []
+        self.SilencesDurations = []
+        self.SilencesProbabilities = []
 
         self.CheckAndSetProbabilities(parameters)
 
@@ -242,6 +229,3 @@ class RhythmicModel(RhythmicGeneratorInterface):
         ]
 
         return section
-
-
-
