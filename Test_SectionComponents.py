@@ -14,7 +14,7 @@ COMPONENTS_PARAMETERS_TYPES = ["Melody", "AccompanimentChord", "AccompanimentArp
 
 # Looks like is working for now
 def testo():
-    allowed_instruments = {
+    allowedInstruments = {
         "Melody": ["Acoustic Grand Piano"],
         "AccompanimentChord": ["Orchestral Harp", "Pizzicato Strings"],
         "AccompanimentArpeggiato": ["Timpani"],
@@ -23,7 +23,7 @@ def testo():
     }
 
     chosenInstruments = {
-        field: choice(allowed_instruments[field]) for field in COMPONENTS_PARAMETERS_TYPES
+        field: choice(allowedInstruments[field]) for field in COMPONENTS_PARAMETERS_TYPES
     }
 
     scale = ScaleSpecs()

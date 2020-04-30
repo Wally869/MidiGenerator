@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 from .MelodicNotePickerInterface import MelodicNotePickerInterface
 
+from MidiStructurer import Note, Bar
 from .utils import FindIdElemInList
 
 from typing import List, Dict
@@ -11,6 +14,10 @@ payload = {
     Reversed: bool,
     Skip: int
 }
+
+maybe call this pattern follower
+and have as payload degrees used?
+=> other model I think bud
 
 """
 
@@ -24,6 +31,9 @@ class ScaleFollowerPickerMelodic(MelodicNotePickerInterface):
 
     def __repr__(self):
         return self.__str__()
+
+    def __call__(self, inputBars: List[Bar], allowedNotes: List[Note], **kwargs):
+        pass
 
     def InitializeModelFromPayload(self, payload: Dict):
         self.Reversed = payload["Reversed"]

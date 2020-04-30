@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from MidiStructurer.Components import Note
+from MidiStructurer.Components import Note, Bar
 
 from .MelodicNotePickerInterface import MelodicNotePickerInterface
 
@@ -23,11 +23,16 @@ class RandomPickerMelodic(MelodicNotePickerInterface):
     def __repr__(self):
         return self.__str__()
 
+    def __call__(self, inputBars: List[Bar], allowedNotes: List[Note], **kwargs):
+        for b in inputBars:
+            for se in b.SoundEvents:
+                se.Note = choice(allowedNotes)
+
     def InitializeModelFromPayload(self, payload: Dict = {}):
         pass
 
-    def ChooseRandomNextNote(self, allowedNotes):
+    def ChooseRandomNextNote(self, allowedNotes: List[Note]) -> Note:
         return choice(allowedNotes)
 
-    def ChooseNextNote(self, previousNote: str, allowedNotes: List[Dict]) -> Note:
+    def ChooseNextNote(self, previousNote: Note, allowedNotes: List[Note]) -> Note:
         return self.ChooseRandomNextNote(allowedNotes)
