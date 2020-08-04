@@ -2,12 +2,14 @@
 
 ## Overview
 
+WIP - need to be ported to MusiStrata 1.0, cleaned etc...
+
 Utils and classes to algorithmically generate Music.
-This folder builds on MidiStructurer (https://github.com/Wally869/MidiStructurer) to represent a musical structure and  output a midi.
+This folder builds on MusiStrata (https://github.com/Wally869/MusiStrata) to represent a musical structure and  output a midi.
 
 ## Dependencies
 
-- MidiStructurer (https://github.com/Wally869/MidiStructurer)
+- MusiStrata (https://github.com/Wally869/MusiStrata)
 - Mido (https://github.com/mido/mido)
 
 ## A Layered Approach
@@ -19,7 +21,7 @@ To generate music, I decided on an incremental approach, which more or less foll
 - Notes are then picked from the given scales, according to a generator preset. 
 - Finally accompanying/comping tracks also have rythms generated, and notes are set. The Bars of the main track are checked when generating these secondary tracks to ensure the notes picked sound alright
 
-After that, the song is passed to the MidiStructurer converter and a midi file is generated.
+After that, the song is passed to the MusiStrata converter and a midi file is generated.
 
 ## Generators
 
