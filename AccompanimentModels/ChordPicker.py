@@ -1,7 +1,7 @@
 from .AccompanimentNotePickerInterface import AccompanimentNotePickerInterface
 
-from MidiStructurer.Components import Note, Chord, Bar
-from MidiStructurer.Components.Structure import Bar, GenerateSoundEventsFromListNotes
+from MusiStrata.Components import Note, Chord, Bar
+from MusiStrata.Components.Structure import Bar, GenerateSoundEventsFromListNotes
 
 from typing import List, Dict
 

@@ -1,6 +1,6 @@
 from .MelodicNotePickerInterface import MelodicNotePickerInterface
 
-from MidiStructurer.Components import Note, Bar
+from MusiStrata.Components import Note, Bar
 from .utils import ComputeCumulativeProbabilities, PickFromCumulativeArray, FindIdElemInList
 
 from random import choice

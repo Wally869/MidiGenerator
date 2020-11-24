@@ -1,4 +1,4 @@
-from MidiStructurer import *
+from MusiStrata import *
 
 from copy import deepcopy
 from random import random, choice
@@ -62,7 +62,7 @@ def GenerateExample2():
     scale = ScaleSpecs()
     degrees = [0, 3, 7, 4, 0]
 
-    scales = [scale] + scale.FindNeighbouringScales()
+    scales = [scale] + scale.GetNeighbouringScales()
     scales = scales[:2]
 
     samples = []
@@ -93,7 +93,7 @@ def GenerateExample2():
 
     t2 = Track(
         Bars=samples2,
-        Instrument="Glockenspiel"
+        Instrument="Acoustic Guitar (nylon)"
     )
 
     s = Song(
@@ -282,15 +282,15 @@ def GenerateSimpleStrophic():
     for i in range(len(bpBars)):
         newNote, err = mpBars[i].SoundEvents[0].Note - Interval(5, "Perfect")
         if err is not None:
-            newNote, _ = mpBars[i] - Interval(5, "Perfect")
+            newNote, _ = mpBars[i].SoundEvents[0].Note - Interval(4, "Perfect")
 
         for se in bpBars[i].SoundEvents:
             se.Note = newNote
 
     bassTrack = Track(
         Bars=bpBars,
-        Instrument="Glockenspiel",
-        Velocity=int(melodicTrack.Velocity * 0.75)
+        Instrument="Glockenspiel"
+        #Velocity=int(melodicTrack.Velocity * 0.75)
     )
     while len(bassTrack.Bars) < targetLen:
         bassTrack += bassTrack
@@ -377,7 +377,7 @@ def GenerateMultiChannelStrophicWithNoteInScaleRestriction():
     print()
 
     # allowedNotes = scale.GetPentatonicScaleNotes()
-    allowedNotes = scale.GetPentatonicScaleNotes(mode=choice(ScaleModes.GetAllNames()))
+    allowedNotes = scale.GetPentatonicScaleNotes(mode=choice(ALL_SCALE_MODES))
     #allowedNotes = scale.GetScaleNotes(mode=choice(ScaleModes.GetAllNames()))
     #allowedNotes = scale.GetScaleNotes(mode="Phrygian")
     allowedNotes = ExtendScaleNotes(allowedNotes, 1)
@@ -472,8 +472,7 @@ def GenerateMultiChannelStrophicWithNoteInScaleRestriction():
 
     taccomp = Track(
         Bars=accompBars,
-        Instrument="Orchestral Harp",
-        Velocity=40
+        Instrument="Orchestral Harp"
     )
 
     rhythmicPreset = [
@@ -509,8 +508,8 @@ def GenerateMultiChannelStrophicWithNoteInScaleRestriction():
 
 
 if __name__ == "__main__":
-    # GenerateExample1()
-    # GenerateExample2()
-    # s = GenerateSimpleStrophic()
+    GenerateExample1()
+    GenerateExample2()
+    s = GenerateSimpleStrophic()
     s = GenerateMultiChannelStrophicWithNoteInScaleRestriction()
     MidoConverter.ConvertSong(s, "strophic.mid")

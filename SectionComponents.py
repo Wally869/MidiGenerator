@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from MidiStructurer import *
+from MusiStrata import *
 from dataclasses import dataclass, field
 
 from typing import List

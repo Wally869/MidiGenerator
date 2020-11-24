@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from MidiStructurer.Components.Structure import Bar, Track
-from MidiStructurer.Components.Notes import Note, CreateNoteFromHeight
-from MidiStructurer.Drums import GetHeightFromDrumsInstrumentName
+from MusiStrata.Components.Structure import Bar, Track
+from MusiStrata.Components.Notes import Note
+from MusiStrata.Drums import GetHeightFromDrumsInstrumentName
 
 from copy import deepcopy
 
@@ -11,7 +11,7 @@ from typing import Dict, List
 
 def GetNoteFromDrumInstrument(drumInstrument: str) -> Note:
     height = GetHeightFromDrumsInstrumentName(drumInstrument)
-    outNote = CreateNoteFromHeight(height)
+    outNote = Note.FromHeight(height)
     return outNote
 
 
@@ -22,7 +22,7 @@ class DrumsBeatColorer(object):
     It works by specifying types of beats (primary, secondary...) and associating instruments
     in the definition. Doing it this way allows a given beat to have several drums acting on it if so desired
 
-    NOTE: Will only support instruments defined as DRUMS in MidiStructurer.Drums
+    NOTE: Will only support instruments defined as DRUMS in MusiStrata.Drums
     Drums have their own specific channel
 
     Example Input

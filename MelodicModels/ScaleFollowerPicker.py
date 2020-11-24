@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from .MelodicNotePickerInterface import MelodicNotePickerInterface
 
-from MidiStructurer import Note, Bar
+from MusiStrata import Note, Bar
 from .utils import FindIdElemInList
 
 from typing import List, Dict

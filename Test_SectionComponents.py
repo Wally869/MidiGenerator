@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from MidiStructurer import *
+from MusiStrata import *
 from SectionComponents import *
 from Database.LocalDB import *
 from RhythmicGenerators import RhythmicPreset, RhythmicModel

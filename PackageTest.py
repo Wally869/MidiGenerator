@@ -1,6 +1,6 @@
 # testing everything in the package to make sure it works
 
-from MidiStructurer import *
+from MusiStrata import *
 
 # RhythmicGenerators
 from RhythmicGenerators import *
@@ -45,14 +45,11 @@ rhythmicPresetData = {
 def Test_RhythmicPreset():
     print("Testing Rhythmic Preset")
     rp = RhythmicPreset(rhythmicPresetData)
-    print("Generating RandomBar")
-    print(rp.GenerateRandomBar(payload={}))
-    print("Generating SectionFromPattern")
+    print("Generating 4-Bars Segment")
     print(
-        rp.GenerateSectionFromPattern(
-            payload={
-                "Pattern": [0, 1, 0]
-            }
+        rp(
+            nbBars=4,
+            nbBeats=4
         )
     )
     return rp
@@ -77,20 +74,11 @@ rhythmicModelData = {
 def Test_RhythmicModel():
     print("Testing Rhythmic Model")
     rm = RhythmicModel(rhythmicModelData)
-    print("Generating RandomBar")
+    print("Generating 4-Bars Segment")
     print(
-        rm.GenerateRandomBar(
-            payload={
-                "NbBeats": 4
-            }
-        )
-    )
-    print(
-        rm.GenerateSectionFromPattern(
-            payload={
-                "NbBeats": 4,
-                "Pattern": [0, 1, 0]
-            }
+        rm(
+            nbBars=2,
+            nbBeats=4
         )
     )
     return rm
@@ -119,10 +107,9 @@ drumsBeatColorerData = {
 def Test_DrumsBeatColorer():
     print("Loading RhythmicPreset to generate rhythmic test")
     rp = RhythmicPreset(rhythmicPresetData)
-    generatedBar = rp.GenerateBar(
-        payload={
-            "ChosenBar": 0
-        }
+    generatedSegment = rp(
+            nbBars=4,
+            nbBeats=4
     )
 
     print("Creating DrumsBeatColorer instance")
@@ -131,7 +118,10 @@ def Test_DrumsBeatColorer():
     )
 
     print("Preparing generated bar")
-    preppedBar = dbc.PrepareBar(generatedBar)
+    for i in range(len(generatedSegment)):
+        generatedSegment[i] = dbc.PrepareBar(generatedSegment[i])
+        #preppedBar = dbc.PrepareBar(generatedSegment)
 
-    [print(se.Note) for se in preppedBar.SoundEvents]
-    return dbc, preppedBar
+    #[print(se.Note) for se in preppedBar.SoundEvents]
+    return dbc, Track(Bars=generatedSegment)
+

@@ -129,7 +129,7 @@ class Section(object):
     NbDrums = 0
 
     # generation attributes
-    Scale = None  # MidiStructurer.Components.ScaleSpecs? or List[Note]?
+    Scale = None  # MusiStrata.Components.ScaleSpecs? or List[Note]?
     RhythmGenerators = None
     NoteGenerators = None
 

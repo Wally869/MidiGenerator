@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from .MelodicNotePickerInterface import MelodicNotePickerInterface
-from MidiStructurer import Note, Interval, Bar
+from MusiStrata import Note, Interval, Bar
 
 from typing import List, Dict
 

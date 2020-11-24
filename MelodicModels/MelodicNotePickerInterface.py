@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from MidiStructurer.Components import Note, Bar
+from MusiStrata.Components import Note, Bar
 
 from random import choice
 from typing import List, Dict

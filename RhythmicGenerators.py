@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from MidiStructurer.Components import Bar, GenerateBarFromRhythmicPreset
+from MusiStrata.Components import Bar, GenerateBarFromRhythmicPreset
 from utils import ComputeCumulativeProbabilitiesFromDict
 
 from random import random, choice
