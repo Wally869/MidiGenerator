@@ -92,7 +92,9 @@ class ChordPicker(AccompanimentNotePickerInterface):
             if not isValidChord:
                 chord = _choice(self.AllowedChords)
 
-            notes, _ = chord(se.Note, rootInOutput=self.RootInOutput)
+            notes, _ = chord(se.Note) #, rootInOutput=self.RootInOutput)
+            if (not self.RootInOutput):
+                notes = notes[1:]
             generatedChordSoundEvents += GenerateSoundEventsFromListNotes(
                 se.Beat,
                 se.Duration,

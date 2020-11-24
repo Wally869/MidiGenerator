@@ -17,7 +17,7 @@ COMPONENTS_PARAMETERS_TYPES = ["Melody", "AccompanimentChord", "AccompanimentArp
 # WAIT UP
 # can have NO distinction between accompaniment models and melodic models?
 # also can use a kwarg UseDependency, to allow 2 behaviour from accompaniment model?
-def testo(nameSection: str = "Intro"):
+def testGenerationSections(nameSection: str = "Intro"):
     allowedInstruments = {
         "Melody": ["Acoustic Grand Piano"],
         "AccompanimentChord": ["Orchestral Harp", "Pizzicato Strings"],
@@ -120,7 +120,7 @@ def testo(nameSection: str = "Intro"):
     return sections
 
 
-def testoToSong(sections):
+def testToSong(sections):
     if len(sections) > 1:
         raise NotImplementedError("Not Implemented yet for more than 1 section")
     section = sections[0]
@@ -132,9 +132,9 @@ def testoToSong(sections):
             Bars=comp.Bars
         )
         s.Tracks.append(t)
-    MidoConverter.ConvertSong(s, "testonew.mid")
+    MidoConverter.ConvertSong(s, "Test_SectionComponents.mid")
 
 
 if __name__ == "__main__":
-    sections = testo()
-    testoToSong(sections)
+    sections = testGenerationSections()
+    testToSong(sections)
