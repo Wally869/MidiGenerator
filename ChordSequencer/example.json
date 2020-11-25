@@ -1,0 +1,24 @@
+{
+  "name": "example",
+  "tempo": 90,
+  "beatsPerBar": 4,
+  "referenceNote": "A",
+  "referenceOctave": 4,
+  "useMajorScale": true,
+  "repetitions": 1,
+  "instrument": "Acoustic Grand Piano",
+  "components": [
+    {
+      "degree": 1,
+      "chord": "Major Triad",
+      "style": "flattened",
+      "specsStyle": {
+        "direction": "high",
+        "repetitions": 1
+      }
+    }
+
+  ]
+
+
+}

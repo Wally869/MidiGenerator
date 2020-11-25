@@ -1,0 +1,39 @@
+{
+  "name": "gen-0",
+  "tempo": 90,
+  "beatsPerBar": 3,
+  "referenceNote": "A",
+  "referenceOctave": 4,
+  "useMajorScale": true,
+  "repetitions": 1,
+  "instrument": "Orchestral Harp",
+  "components": [
+    {
+      "degree": 0,
+      "chord": "Major Triad",
+      "style": "pairs",
+      "specsStyle": {
+        "uprooted": true,
+        "repetitions": 1
+      }
+    },
+    {
+      "degree": 3,
+      "chord": "Major Triad",
+      "style": "pairs",
+      "specsStyle": {
+        "uprooted": true,
+        "repetitions": 1
+      }
+    },
+    {
+      "degree": 4,
+      "chord": "Major Triad",
+      "style": "pairs",
+      "specsStyle": {
+        "uprooted": true,
+        "repetitions": 1
+      }
+    }
+  ]
+}
