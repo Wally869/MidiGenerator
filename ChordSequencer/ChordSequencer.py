@@ -30,7 +30,7 @@ repeatSegment = True
 
 # instruments
 instrumentMelody = "Orchestral Harp"
-instrumentBass = "Acoustic Grand Piano"""
+instrumentBass = "Acoustic Grand Piano"
 
 
 allowedChords = [minTriad, majTriad, majSeventh, minSeventh]

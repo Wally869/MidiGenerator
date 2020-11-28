@@ -1,0 +1,4 @@
+
+
+class Flair(object):
+    pass
