@@ -1,6 +1,7 @@
 
 
 from MusiStrata import * 
+from MusiStrata.Rendering import Render, RenderFormats
 
 from random import choice
 
@@ -10,7 +11,7 @@ tempo = 120.0
 scaleNote = "C"
 scaleMode = "Major"
 
-scale = ScaleSpecs(scaleNote, scaleMode)
+scale = Scale(scaleNote, scaleMode)
 notes = scale.GetScaleNotes(5)
 chords = scale.GetScaleChordsNotes()
 chordos = scale.GetScaleChordsProgression()
@@ -50,6 +51,7 @@ for idTone in range(len(bassTones)):
 t2.Instrument = "Bright Acoustic Piano"
 
 s = Song(Tempo=tempo, BeatsPerBar=beatsPerBar, Tracks=[t, t2])
-MidoConverter.ConvertSong(s, "test.mid")
+Render(s, "test.mid", RenderFormats.MIDI)
+
 
 

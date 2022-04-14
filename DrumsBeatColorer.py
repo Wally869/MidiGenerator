@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from MusiStrata.Components.Structure import Bar, Track
 from MusiStrata.Components.Notes import Note
-from MusiStrata.Drums import GetHeightFromDrumsInstrumentName
+from MusiStrata.Instruments import GetHeightFromDrumsInstrumentName
 
 from copy import deepcopy
 

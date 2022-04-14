@@ -3,7 +3,7 @@
 from MusiStrata import *
 
 # RhythmicGenerators
-from RhythmicGenerators import *
+from RhythmGeneration import *
 
 rhythmicPresetData = {
     "Name": "TestRhythmicPreset1",

@@ -1,90 +1,12 @@
-from __future__ import annotations
+from typing import List, Tuple, Dict, Union
+from .BaseGenerator import BaseRhythmicGenerator
 
-from MusiStrata.Components import Bar, GenerateBarFromRhythmicPreset
-from utils import ComputeCumulativeProbabilitiesFromDict
+from MusiStrata import Bar, Note, SoundEvent
+from random import choice, random
 
-from random import random, choice
-from math import ceil
-from copy import deepcopy
+from ..Utils import ComputeCumulativeProbabilitiesFromDict
 
-from typing import List, Dict, Union, Tuple
-
-
-class RhythmicGeneratorInterface(object):
-    def __str__(self):
-        return "<class 'RhythmicGeneratorInterface'>"
-
-    def __repr__(self):
-        return self.__str__()
-
-    @staticmethod
-    def GenerateBreak():
-        # Use this to get an empty bar, could serve as break in between generated segments
-        return Bar()
-
-    @staticmethod
-    def GeneratePattern(nbBars: int) -> Tuple[int, List[int]]:
-        # how many different bars? use square root of nb bars
-        nbSegments = ceil(nbBars ** 0.5)
-        return nbSegments, [choice(range(nbSegments)) for _ in range(nbBars)]
-
-
-class RhythmicPreset(RhythmicGeneratorInterface):
-    """
-    Expecting a Dict following this example:
-    {
-        "Name": "TestRhythmicPreset1",
-        "Tags": ["Test"],
-        "Beats": 4,
-        "MainPreset": [
-            {
-                "beat": 0.0,
-                "duration": 1.0
-            },
-            {
-                "beat": 2.0,
-                "duration": 1.0
-            },
-            {
-                "beat": 3.0,
-                "duration": 0.5
-            },
-            {
-                "beat": 3.5,
-                "duration": 0.5
-            }
-        ],
-        "Variants": []
-    }
-
-    """
-    NbBeats = 4
-
-    def __init__(self, parameters: Dict):
-        self.NbBeats = parameters["NbBeats"]
-        self.Presets = [parameters["MainPreset"]] + parameters["VariantsPreset"]
-
-    def __str__(self):
-        return "<class 'RhythmicPreset'>"
-
-    def __repr__(self):
-        return self.__str__()
-
-    # override generatepattern
-    def GeneratePattern(self, nbBars: int) -> List[int]:
-        return [choice(range(len(self.Presets))) for _ in range(nbBars)]
-
-    def __call__(self, nbBars: int, nbBeats: float = 4.0, pattern: List[int] = [], **kwargs):
-        if pattern == []:
-            pattern = self.GeneratePattern(nbBars)
-        return [
-            GenerateBarFromRhythmicPreset(
-                self.Presets[idPreset]
-            ) for idPreset in pattern
-        ]
-
-
-class RhythmicModel(RhythmicGeneratorInterface):
+class RhythmicModel(BaseRhythmicGenerator):
     """
     Expecting a Dict as input with fields:
         - Name: str
@@ -201,6 +123,6 @@ class RhythmicModel(RhythmicGeneratorInterface):
         return barPreset
 
     def GenerateBar(self, nbBeats: float) -> Bar:
-        return GenerateBarFromRhythmicPreset(
+        return self.GenerateBarFromRhythmicPreset(
             self.GeneratePreset(nbBeats)
         )
