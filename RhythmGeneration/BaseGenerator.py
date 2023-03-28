@@ -6,7 +6,7 @@ from MusiStrata.Components import Bar, Note, SoundEvent
 from random import choice
 from math import ceil
 
-class BaseRhythmicGenerator(IRhythmicGenerator, object):
+class BaseRhythmicGenerator(IRhythmicGenerator):
     def __str__(self):
         return "<class 'RhythmicGeneratorInterface'>"
 

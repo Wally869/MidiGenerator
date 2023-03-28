@@ -32,7 +32,6 @@ class RhythmicPreset(BaseRhythmicGenerator):
         ],
         "Variants": []
     }
-
     """
 
     def __init__(self, parameters: Dict):
